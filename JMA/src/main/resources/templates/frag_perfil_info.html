@@ -1,0 +1,117 @@
+<div th:fragment="info">
+
+
+<div class="row">
+  <div class="col-md-3" >
+    <script>
+      var loadFile = function(event) {
+        var reader = new FileReader();
+        reader.onload = function(){
+          var output = document.getElementById("output");
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      };
+    </script>
+    <label for="file">
+      <i style="font-size:20px; color:#40CC9B; position:relative; top:-20px; left:120px;" class="fal fa-images"></i>
+    </label>
+    <form th:action="@{/newphoto}" method="Post" enctype="multipart/form-data">
+      <input type="hidden" name="hash" th:value="${session.hash}">
+      <input id="file" type="file" name="file" accept="image/*" onchange="loadFile(event)" style="visibility: hidden;">
+      <button type="submit" class="btn btn-primary" name="button" style="position: relative; top:-58px; left: 70px; padding:1px 15px;">Mudar a foto</button>
+    </form>
+  </div>
+  <div class="col-md-7">
+
+
+
+<!-- Basic Information
+================================================= -->
+
+<div class="edit-profile-container">
+
+
+  <div class="block-title">
+    <h4 class="grey"><i class="icon ion-android-checkmark-circle"></i>Editar Informação</h4>
+  </div>
+  <div class="edit-block"><form th:action="@{/editprofile}" method="Post" name="basic-info" id="basic-info" class="form-inline">
+      <div class="row">
+
+
+        <div class="form-group col-xs-6">
+          <label for="nome">Nome</label>
+          <input id="nome" class="form-control input-group-lg" type="text" name="firstname" title="Enter first name" placeholder="name" th:value="${Person.firstname}"  />
+        </div>
+        <div class="form-group col-xs-6">
+          <label for="apelido" class="">Apelido</label>
+          <input id="apelido" class="form-control input-group-lg" type="text" name="lastname" title="Enter last name" placeholder="Apelido" th:value="${Person.lastname}" />
+        </div>
+        <div class="form-group col-xs-6">
+          <label for="category" class="">Categoria</label>
+          <!-- <input id="category" class="form-control input-group-lg" type="text" name="category" title="Enter last name" placeholder="Categoria" th:value="${Person.category}" /> -->   
+          <select class="form-control thatwidth" id="categoryevent" name="category" required>
+              <div id="getcategories" th:each="Category: ${Category}">
+              <option th:value="${Category.description}" th:text="${Category.description}" th:id="${Category.description}"></option>
+            </div>
+            </select>
+        </div>
+            <div class="form-group col-xs-6">
+          <label for="subcategory" class="">Sub-Categoria</label>
+          <!-- <input id="subcategory" class="form-control input-group-lg" type="text" name="subcategory" title="Enter last name" placeholder="Sub-Categoria" th:value="${Person.subcategory}" /> -->
+          <select id="subcategoryevent" class="form-control input-group-lg" name="subcategory">
+
+          </select>
+        </div>
+        <div class="form-group col-xs-6">
+          <label for="telemovel" class="">Telemóvel</label>
+          <input id="telemovel" class="form-control input-group-lg" type="numbers" name="phonenumber" title="Enter last name" placeholder="Telemóvel" th:value="${Person.phonenumber}" />
+        </div>
+                <div class="form-group col-xs-6">
+          <label for="website">WebSite Pessoal</label>
+          <input id="website" class="form-control input-group-lg" type="text" name="website" title="Enter first name" placeholder="website" th:value="${Person.website}"  />
+        </div>
+
+                <div class="form-group col-xs-6">
+          <label for="website">Descrição Pessoa</label>
+          <input id="website" class="form-control input-group-lg" type="text" name="description" title="Enter first name" placeholder="description" th:value="${User.description}"  />
+        </div>
+      </div>
+      <div class="form-group gender">
+
+      </div>
+      <div class="row">
+
+
+
+    </div>
+      <div class="row">
+        <div class="form-group col-xs-6">
+          <label class="sr-only" >City</label>
+<select class="form-control" name="district" id="districtoptions">
+                          
+                          </select>
+        </div>
+        <div class="form-group col-xs-6">
+          <label for="country" class="sr-only"></label>
+          <select class="form-control" name="country" id="country" th:value="${User.country}">
+            <option value="Portugal" disabled selected>Country</option>
+            <option value="Portugal">Portugal</option>
+          </select>
+        </div>
+
+
+
+
+      </div>
+      <button type="submit" class="btn btn-primary">Editar</button>
+   </form>
+  </div>
+  </div>
+  <div th:include="frag_perfil_password::password">Mudar de Password</div>
+</div>
+
+</div>
+
+</div>
+</div>

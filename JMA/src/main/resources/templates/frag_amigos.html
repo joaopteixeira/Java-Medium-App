@@ -1,0 +1,44 @@
+
+<div th:fragment="amigos" >
+
+<div class="row">
+  <div class="col-md-3 static">
+    <div id="sticky-sidebar">
+      <h3><span th:utext="${Person.firstname}"></span> <span th:utext="${Person.lastname}"></span></h3>
+      <p class="text-muted"><span th:src="${Person.category}"></span></p>
+      <div class="feed-item">
+        <div class="live-activity">
+          <p class="profile-link">Sobre</p>
+          <p class="watchings">Observa: <span th:text="${#lists.size(Person.watching)}"></span></p>
+          <p class="watcheds">Observadores: <span th:text="${#lists.size(Person.watched)}"></span></p>
+          <p class="text-muted">Género: <span th:if="${Person.gender.equals(2)}"> <span>Masculino</span> </span><span th:if="${Person.gender.equals(1)}"> <span>Feminino</span> </span></p>
+          <p class="text-muted">Pais: <span th:utext="${Person.country}"></span></p>
+          <p class="text-muted">Districto: <span th:utext="${Person.district}"></span></p>
+          <p class="text-muted">Email: <span th:utext="${Person.email}"></span></p>
+          <p class="text-muted">Telemóvel: <span th:utext="${Person.phonenumber}"></span></p>
+          <p class="text-muted">Data de Nascimento: <span th:utext="${Person.birthdate}"></span></p>
+        </div>
+      </div>
+      <div class="feed-item">
+        <div class="live-activity">
+          <p class="profile-link"> <span th:if="${Person.type.equals(0)}"><span> Artista </span></span> <span th:if="${Person.type.equals(1)}"><span> Observador </span></span></p>
+        </div>
+      </div>
+      <button type="button" onclick="startChatting()" class="chatstatu btn btn-primary" style="padding:1px 15px;">Chat</button>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="friend-list">
+      <div id="Watcheds" class="row js-masonry" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": ".grid-sizer", "percentPosition": true }'>
+
+      </div>
+    </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2 static">
+
+  </div>
+</div>
+</div>

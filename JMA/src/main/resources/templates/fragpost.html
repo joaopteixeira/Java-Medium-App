@@ -1,0 +1,127 @@
+<div th:fragment="post">
+
+
+<div class="create-post">
+  <div class="text-header">New</div>
+  <form th:action="@{/newpost}" method="Post" enctype="multipart/form-data">
+  <div class="row">
+    <div class="col-md-12">
+        <div class="form-group col-md-12">
+          
+          <textarea name="content" id="start" rows="3" class="form-control" placeholder="--" style="resize:none;" maxlength="150" oninput="myFunction()" required></textarea>
+          <input type="hidden" name="typemedia" value="3" id="tipo_media">
+          <input id="file-input"  th:name="file" type="file" accept="" style="display:none;" onchange="loadFile(event)"/>
+          <script>
+          function myFunction() {
+              var x = document.getElementById("start").value;
+              document.getElementById("puthere").innerHTML = "" + x;
+          }
+        </script>
+        </div>
+      </div>
+    </div>
+      <div class="media-upload" style="margin-top:2%;">
+                   <div class="row">
+                     <ul class="file col-md-12">
+                      <li id="natzc1" class="col-md-2" style="width:10%;">
+                        <a>
+                          <label for="file-input">
+                            <i class="ion-images"></i>
+                          </label>
+                         <!-- <input id="image-input"  name="image" type="file" accept="image/*" onchange="loadFile(event)"/>-->
+                        </a>
+                      </li>
+                      <li id="natzc2" class="col-md-2" style="width:10%;">
+                        <a>
+                          <label>
+                            <i class="ion-ios-videocam"></i>
+                          </label>
+                        </a>
+                      </li>
+                      <li id="natzc3" class="col-md-2" style="width:10%;">
+                        <a>
+                          <label id="audio" for="file-input">
+                            <i style="font-size: 12px; "  class="fas fa-music"></i>
+                          </label>
+                          <!--<input id="audio-input" type="file" name="audio" value="" accept="audio/*">-->
+                        </a>
+                      </li>
+                      <li id="natzc4">
+                        <input id="video-input" class="form-control" name="video" type="text" size="42" placeholder="Link do Video" value="https://www.youtube.com/embed/" style="visibility: visible;"/>
+                      </li>
+                      <li id="natzc5">
+                        <a>
+                        <label>
+                          <i  class="ion-close"></i>
+                        </label>
+                      </a>
+                      </li>
+                    </ul>
+                   </div>
+                  </div>
+      <div class="" style="float:right; margin-bottom: 10px;">
+     	<button class="btn btn-primary pull-right" type="submit">Send</button>
+      </div>
+      </form>
+    <!--
+    	form id="singleUploadForm" name="singleUploadForm">
+           <input id="singleFileUploadInput" type="file" name="file" class="file-input" required />
+       	</form>
+    -->
+
+       <script>
+         var loadFile = function(event) {
+           var reader = new FileReader();
+           reader.onload = function(){
+               var output = document.getElementById("output");
+             output.src = reader.result;
+           };
+           reader.readAsDataURL(event.target.files[0]);
+         };
+       </script>
+
+       <!-- Preview Post
+================================================= -->
+        <div class="post-content" id="preview-post">
+              <div id="natc1" class="media media-preview">
+                <img id="output" src="" alt="post-image" class="img-responsive post-image" style="max-height:400px; width:auto; margin:auto; display:block;" />
+              </div>
+              <div id="natc2" class="media media-preview">
+                  <iframe class="post-video"  width="570" height="315" id="output2" src=""></iframe>
+              </div>
+              <div id="natc3" class="media media-preview">
+                <audio controls>
+                  <source id="output3" src="horse.ogg" type="audio/ogg">
+                  <source id="output4" src="horse.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+                </audio>
+              </div>
+              <div class="post-container">
+                <img th:src="${User.pathimage}"  class="profile-photo-md pull-left" />
+                <div class="post-detail">
+                  <div class="user-info">
+                    <h5><a href="timeline.html" class="profile-link"><span th:text="${User.firstname}"></span> <span th:text="${User.lastname}"></span></a> </span></h5>
+                  </div>
+                  <div class="reaction">
+                    <a class="btn text-green"></a>
+                  </div>
+                  <div class="line-divider"></div>
+                  <div class="post-text">
+                    <div id="puthere"></div>
+
+                  </div>
+                  <div class="line-divider"></div>
+                </div>
+              </div>
+            </div>
+
+
+</div><!-- Post Create Box End-->
+<br>
+<hr class="separate text-legreen">
+
+<div id="posts">
+
+</div>
+<button onclick="topFunction()" id="myBtn" class="myBtnscroll BtnScrollUp"><i class="fal fa-chevron-circle-up"></i></button>
+</div>

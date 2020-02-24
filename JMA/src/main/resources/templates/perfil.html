@@ -1,0 +1,30 @@
+<div th:fragment="perfil">
+  <script type="text/javascript">
+    function activefunctions(){
+      watching();
+      //getwatching();
+    }
+  </script>
+    <div class="container">
+      <!-- Timeline
+      ================================================= -->
+
+</div>
+          <!-- Fragmentos -->
+      <div id="page-contents">
+          <th:block  th:switch="${frag}">
+           <div th:case="timeline"><span th:include="frag_timeline::timeline"></span></div>
+           <div th:case="about"><span th:include="frag_about::about"></span></div>
+           <div th:case="galeria"><span th:include="frag_galeria::galeria"></span></div>
+           <div th:case="playlist"><span th:include="frag_playlist::playlist"></span></div>
+           <div th:case="amigos"><span th:include="frag_amigos::amigos"></span></div>
+           <div th:case="profile"><span th:include="frag_perfil_info::info"></span></div>
+
+           <div th:case="password"><span th:include="frag_perfil_password::password"></span></div>
+
+
+          </th:block>
+
+        </div>
+  </div>
+</div>

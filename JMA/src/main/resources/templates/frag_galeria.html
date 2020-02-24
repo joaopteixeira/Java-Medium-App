@@ -1,0 +1,47 @@
+
+<div th:fragment="galeria">
+
+<div class="row">
+    <!-- ||| -->
+    <div class="col-md-3 static"> <!-- Informação da pessoa -->
+      <div id="sticky-sidebar">
+      
+        <p class="text-muted"><span th:src="${Person.category}"></span></p>
+        <div class="feed-item">
+          <div class="live-activity">
+            <p class="profile-link"></p>
+         
+          </div>
+        </div>
+        <div class="feed-item">
+        
+        </div>
+        <button type="button" onclick="startChatting()" class="chatstatu btn btn-primary" style="padding:1px 15px;">Chat</button>
+      </div>
+    </div>
+    <div class="col-md-7"><!-- Fragmento -->
+      <!-- Lista de todos os Posts
+      ================================================= -->
+    <div class="media">
+      <div class="row js-masonry" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": ".grid-sizer", "percentPosition": true }'>
+        <div class="" th:if="${#lists.isEmpty(posts)}"> 
+              Não tem fotos.
+         </div>
+         <div class="" th:if="${!#lists.isEmpty(posts)}"> 
+            <th:block th:each="post : ${posts}">
+              <div th:if="${post.media.typemedia.equals(0)}" class="grid-item col-md-6 col-sm-6">
+                <div class="media-grid">
+                  <div class="img-wrapper">
+                    <img th:src="${post.media.pathfile}"  class="img-wrapper img-responsive post-image" style="object-fit: contain; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
+                  </div>
+                </div>
+              </div>
+            </th:block>
+         </div>
+      </div>
+    </div>
+
+    </div>
+
+
+</div>

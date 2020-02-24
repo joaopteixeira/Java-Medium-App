@@ -1,0 +1,44 @@
+<!-- INICIO FRAGMENTOS -->
+<!-- Friend List
+================================================= -->
+
+<div  th:fragment="friendlist">
+<div class="text-header">
+  Seguidores
+</div>
+<th:block th:each="friend: ${friends}">
+<div class="list-people">
+  <div class="row">
+
+
+    <div class="col-md-12 col-sm-12">
+      <!-- CONTACT MODEL -->
+      <div class="friend-card col-md-12 col-sm-12">
+        <div class="friend-info">
+        <div class="col-md-3 col-sm-3">
+          <img th:src="${friend.pathimage}" alt="foto" class="profile-photo-lg" />
+        </div>
+        <div class="col-md-3 col-sm-3" style="margin-top:2px;">
+            <h5><a th:href="@{/profile?personid=} + ${friend.id}" class="profile-link"><span th:text="${friend.firstname}"></span><span th:text="${friend.lastname}"></span>  </a></h5>
+            <p><span th:utext="${#lists.size(friend.watching)}"></span></p>
+        </div>
+            <div class="col-md-3 col-sm-3" style="margin-top:2px;">
+            <h5><a href="timeline.html" class="profile-link"><span th:text="${friend.category}"></span></a></h5>
+            <p><span th:text="${friend.subcategory}"></span></p> 
+        </div> 
+        <div class="col-md-3 col-sm-3" style="margin-top:20px;">
+         <a th:href="@{/profile?personid=} + ${friend.id}" class="profile-link"> <button class="btn btn-primary" style="vertical-align:center" type="button" name="button" value="">Visualizar</button></a>
+        </div>
+        </div>
+      </div>
+
+      <!-- END CONTACT MODEL -->
+    </div>
+
+
+  </div>
+</div>
+</th:block>
+</div>
+
+<!-- FIM FRAGMENTO -->

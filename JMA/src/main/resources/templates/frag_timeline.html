@@ -1,0 +1,467 @@
+
+<div th:fragment="timeline">
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+         var id = /*[[${session.User.id}]]*/;
+         var pathimage = /*[[${session.User.pathimage}]]*/;
+         var firstname = /*[[${session.User.firstname}]]*/;
+         var lastname = /*[[${session.User.lastname}]]*/;
+         var hash = /*[[${session.hash}]]*/;
+       /*]]>*/
+
+      var allpost;
+      var page = 0;
+      var range = 20;
+
+
+
+
+      function getpost(){
+        var tiipo = 2;
+        var url =window.location;
+        let params = new URL(url).searchParams;
+        var iiduser= params.get('personid');
+        var idpost= '';
+        var outpuut = '';
+        var outpuuut = '';
+          $.ajax({
+            url:'mposts/allposts',
+            method:'GET',
+            data: {iduser: iiduser, idpost: idpost, tipo: tiipo, sizepost: allpost, page:page, range: range},
+            datatype:JSON,
+            cache:false,
+            success:function(data){
+              outpuut+='<div class="modal fade" id="Mymodal" tabindex="-1" role="dialog" aria-hidden="false">';
+              outpuut+='  <div class="modal-dialog modal-lg" id="postshow">';
+              outpuut+='  </div>';
+              outpuut+='</div> ';
+              var likes;
+              var idlike = 0;
+              for (var j = 0; j < data.length; j++){
+                likes=0;
+                idlike = 0;
+                for (var k = 0; k < data[j].likes.length; k++){
+                  likes += 1;
+                  if(data[j].likes[k] == id){
+                    idlike = 1;
+                  }
+                }
+                outpuut+='<div class="post-content">';
+                outpuut+='<div class="media" data-toggle="modal" data-target=".modal-'+data[j].iduser+'">';
+
+                if(data[j].media.typemedia == 0){
+                  outpuut+='  <img src="'+data[j].media.pathfile+'"  class="img-responsive post-image" style="height: 500px; object-fit: contain;">';
+                }
+                if(data[j].media.typemedia == 1){
+                  outpuut+='  <iframe class="post-video" src="'+data[j].media.pathfile+'" width="570" height="315"></iframe>';
+                }
+                if(data[j].media.typemedia == 2){
+                  outpuut+='  <audio controls> ';
+                  outpuut+='    <source src="'+data[j].media.pathfile+'" type="audio/mpeg">';
+                  outpuut+='  Your browser does not support the audio element.';
+                  outpuut+='  </audio>';
+                }
+                outpuut+='</div>';
+                outpuut+=' <div class="post-container">';
+                iiduser = data[j].iduser;
+                $.ajax({
+                 url:'mposts/finduser',
+                method:'GET',
+                 data: {'iduser': iiduser},
+                 datatype:JSON,
+                 cache:false,
+                async: false,
+                 success:function(datah){
+                  outpuut+='   <img src="'+datah[0].pathimage+'" alt="user" class="profile-photo-md pull-left" />';
+                  outpuut+='   <div class="post-detail">';
+                  outpuut+='     <div class="user-info">';
+                  outpuut+='       <h5><a href="/profile?personid='+datah[0].id+'">'+datah[0].firstname+' '+datah[0].lastname+'</a></h5>';
+                  outpuuut='      <div class="post-container">';
+                  outpuuut+='        <img src="'+datah[0].pathimage+'" alt="user" class="profile-photo-md pull-left" />';
+                  outpuuut+='        <div class="post-detail">';
+                  outpuuut+='          <div class="user-info">';
+                  outpuuut+='            <h5><a href="/profile?personid='+datah[0].id+'" class="profile-link">'+datah[0].firstname+' '+datah[0].lastname+'</a></h5>';
+                 }});
+                outpuut+=          '<span style="color:#40CC9B;"><span class="following">'+data[j].userwatched+'</span>';
+                if(data[j].userwatched == 1){
+                  outpuut+=' observador</span>';
+                }else {
+                  outpuut+=' observadores</span>';
+                }
+                outpuut+='       <p class="text-muted">'+data[j].date+'</p>';
+                outpuut+='     </div>';
+                outpuut+='     <div class="reaction">';
+                  if(idlike == 1){
+                      outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #8dc63f;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+                  }
+                  else {
+                    outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #d0e7b1;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+                  }
+                outpuut+='     </div>';
+                outpuut+='     <div class="line-divider"></div>';
+                outpuut+='     <div class="post-text">';
+                outpuut+='       <p>'+data[j].content+'</p>';
+                outpuut+='     </div>';
+                outpuut+='   </div>';
+                outpuut+='      <button class="css3button" onclick="poppost(\''+data[j].id+'\')">Ver Coméntarios</button>';
+                outpuut+=' </div>';
+                outpuut+='</div>';
+
+                }
+                outpuut+='<div>';
+                if(page != 0){
+                  outpuut+='<button style="float: left;" onclick="lastposts()"> « anterior </button> ';
+                }
+                if(!(range*(page+1) >= allpost)){
+                  outpuut+='<button style="float: right;" onclick="nextposts()"> próximo » </button>';
+                }
+                outpuut+='</div>';
+                $("#timeline_post").html(outpuut);
+            }
+        });
+      }
+
+
+    function poppost(idpost){
+    var idposty = idpost;
+     var outpuut='';
+     var iiduser = '';
+     var tiipo = 1;
+     var idusercontent;
+     var temp;
+     var last_post = 0;
+
+         $.ajax({
+          url:'mposts/allposts',
+          method:'GET',
+          data: {iduser: iiduser, idpost: idposty, tipo: tiipo, sizepost: allpost, page:page, range: range},
+          datatype:JSON,
+          cache:false,
+          success:function(data){
+           var likes;
+           var idlike = 0;
+           for (var j = 0; j < data.length; j++){
+             likes=0;
+             idlike = 0;
+             for (var k = 0; k < data[j].likes.length; k++){
+               likes += 1;
+               if(data[j].likes[k] == id){
+                 idlike = 1;
+               }
+             }
+             outpuut+='        <div class="modal-content">';
+             outpuut+='          <div class="post-content">';
+             outpuut+='<div class="media">';
+
+             if(data[j].media.typemedia == 0){
+               outpuut+='  <img src="'+data[j].media.pathfile+'"  class="img-responsive post-image" style="height: 500px; object-fit: contain;">';
+             }
+             if(data[j].media.typemedia == 1){
+               outpuut+='  <iframe class="post-video" src="'+data[j].media.pathfile+'" style="position: relative;left: 160px;" width="570" height="315"></iframe>';
+             }
+             if(data[j].media.typemedia == 2){
+               outpuut+='  <audio controls> ';
+               outpuut+='    <source src="'+data[j].media.pathfile+'" type="audio/mpeg">';
+               outpuut+='  Your browser does not support the audio element.';
+               outpuut+='  </audio>';
+             }
+             outpuut+='</div>';
+             outpuut+='            <div class="post-container">';
+             iiduser = data[j].iduser;
+             $.ajax({
+              url:'mposts/finduser',
+              method:'GET',
+              data: {'iduser': iiduser},
+              datatype:JSON,
+              cache:false,
+             async: false,
+              success:function(datahh){
+               outpuut+='   <img src="'+datahh[0].pathimage+'" alt="user" class="profile-photo-md pull-left">';
+               outpuut+='   <div class="post-detail">';
+               outpuut+='     <div class="user-info">';
+               outpuut+='       <h5><a href="/profile?personid='+datahh[0].id+'">'+datahh[0].firstname+' '+datahh[0].lastname+'</a></h5>';
+              }});
+             outpuut+=          '<span style="color:#40CC9B;"><span class="following">'+data[j].userwatched+'</span>';
+             if(data[j].userwatched == 1){
+               outpuut+=' observador</span>';
+             }else {
+               outpuut+=' observadores</span>';
+             }
+             outpuut+='                <p class="text-muted">'+data[j].date+'</p>';
+             outpuut+='                </div>';
+             outpuut+='                <div class="reaction">';
+               if(idlike == 1){
+                   outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #8dc63f;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+               }
+               else {
+                 outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #d0e7b1;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+               }
+             outpuut+='                </div>';
+             outpuut+='                <div class="line-divider"></div>';
+             outpuut+='                <div class="post-text">';
+             outpuut+='                  <p>'+data[j].content+'</p>';//post
+             outpuut+='                </div>';
+             outpuut+='                <div id="comment">';
+             for (var i = 0; i < data[j].comments.length; i++){
+               idusercontent = data[j].comments[i].iduser;
+               outpuut+='                <div class="line-divider"></div>';
+               outpuut+='                <div class="post-comment">';
+               $.ajax({
+              url:'mposts/finduser',
+             method:'GET',
+              data: {'iduser': idusercontent},
+              datatype:JSON,
+              cache:false,
+             async: false,
+              success:function(datah){
+               outpuut+='                  <img src="'+datah[0].pathimage+'" alt="" class="profile-photo-sm" />';
+               outpuut+='                  <p><a href="/profile?personid='+datah[0].id+'" class="profile-link">'+datah[0].firstname+' '+datah[0].lastname+' </a>';
+              }});
+               outpuut+=data[j].comments[i].content+'</p>';
+               outpuut+='                </div>';
+             }
+              outpuut+='                  </div>';
+             outpuut+='                    <div class="form-group" style="width: 100% !important;">';
+
+             outpuut+='                    </div>';
+
+             outpuut+='                <div class="post-comment">';
+             outpuut+='                  <img src="'+pathimage+'" alt="" class="profile-photo-sm">';//<-img do sess
+             outpuut+='                    <div style="width: 80%;float: right;"><input type="text"maxlength="80" class="form-control" placeholder="Comentar" id="comentario"></div>';
+             outpuut+='                  &nbsp;&nbsp;&nbsp;<button style="height:35px;width:120px;relative;top: 4px;"class="btn btn-primary pull-right" type="button" onclick="addcoment(\''+data[j].id+'\')">Publicar</button>';
+             outpuut+='              </div>';
+             outpuut+='            </div>';
+             outpuut+='          </div>';
+             outpuut+='        </div>';
+           }
+             $("#Mymodal").modal("show");
+             $("#postshow").html(outpuut);
+         }
+     });
+   }
+
+   function like(x){
+     var classlike = "."+x;
+     var content;
+     $.ajax({
+      url:'mposts/like',
+      method:'GET',
+      data: {'id_post': x, 'id_user': id},
+      cache:false,
+      success:function(){
+        $.ajax({
+         url:'mposts/getlikes',
+         method:'GET',
+         data: {'id_post': x},
+         cache:false,
+         async: false,
+         success:function(data){
+           var likes;
+           var idlike = 0;
+           for (var j = 0; j < data.length; j++){
+             likes=0;
+             idlike = 0;
+             for (var k = 0; k < data[j].likes.length; k++){
+               likes += 1;
+               if(data[j].likes[k] == id){
+                 idlike = 1;
+               }
+             }
+           }
+           if(idlike == 1){
+             content ="<i style='color: #8dc63f;' class='icon ion-thumbsup'></i> "+likes;
+           }else {
+            content ="<i style='color: #d0e7b1;' class='icon ion-thumbsup'></i> "+likes;
+           }
+           $(classlike).html(content);
+        }});
+      }});
+   }
+
+   function addcoment(x){
+     var comentario = $("#comentario").val();
+     var mensagem='';
+     if(comentario != ""){
+       $.ajax({
+         url:'mposts/addcomment',
+         method:'GET',
+         data: {'hash': hash, idpost: x, content: comentario},
+         datatype:JSON,
+         cache:false,
+         success:function(data){}});
+         mensagem = '<div class="line-divider"></div><div class="post-comment"><img src="'+pathimage+'" alt="" class="profile-photo-sm" /><p><a class="profile-link">'+firstname+' '+lastname+' </a>'+comentario+'</p></div>';
+         $("#comment").append(mensagem);
+         $("#comentario").val("");
+     }
+   }
+
+
+   function nextposts(){
+     page += 1;
+     getpost();
+     document.body.scrollTop = 0;
+     document.documentElement.scrollTop = 0;
+   }
+   function lastposts(){
+     page -= 1;
+     getpost();
+   }
+ </script>
+  <script>
+       $(document).ready(function(){
+         var url =window.location;
+         let params = new URL(url).searchParams;
+          var tiipo = 2;
+          var iiduser= params.get('personid');
+          var outpuut = '';
+          var outpuuut = '';
+          var iidpost = '';
+          var idlike = 0;
+          $.ajax({
+            url:'mposts/sizeidposts',
+            method:'GET',
+            data: {iduser: iiduser},
+            cache:false,
+            async: false,
+            success:function(data){
+              allpost = data;
+            }});
+          if(allpost == 0){
+                console.log("empty");
+                outpuut='<p> EMPTY </p>';
+                $("#timeline_post").html(outpuut);
+              }else{
+            $.ajax({
+              url:'mposts/allposts',
+              method:'GET',
+              data: {iduser: iiduser, idpost: iidpost, tipo: tiipo, sizepost: allpost, page:page, range: range},
+              datatype:JSON,
+              cache:false,
+              success:function(data){
+                outpuut+='<div class="modal fade" id="Mymodal" tabindex="-1" role="dialog" aria-hidden="false">';
+                outpuut+='  <div class="modal-dialog modal-lg" id="postshow">';
+                outpuut+='  </div>';
+                outpuut+='</div> ';
+                var likes;
+                for (var j = 0; j < data.length; j++){
+                  likes=0;
+                  idlike = 1;
+                  for (var k = 0; k < data[j].likes.length; k++){
+                    likes += 1;
+                    if(data[j].likes[k] == id){
+                      idlike = 1;
+                    }
+                  }
+                  outpuut+='<div class="post-content">';
+                  outpuut+='<div class="media" data-toggle="modal" data-target=".modal-'+data[j].iduser+'">';
+
+                  if(data[j].media.typemedia == 0){
+                    outpuut+='  <img src="'+data[j].media.pathfile+'"  class="img-responsive post-image" style="height: 500px; object-fit: contain;">';
+                  }
+                  if(data[j].media.typemedia == 1){
+                    outpuut+='  <iframe class="post-video" src="'+data[j].media.pathfile+'" width="570" height="315"></iframe>';
+                  }
+                  if(data[j].media.typemedia == 2){
+                    outpuut+='  <audio controls> ';
+                    outpuut+='    <source src="'+data[j].media.pathfile+'" type="audio/mpeg">';
+                    outpuut+='  Your browser does not support the audio element.';
+                    outpuut+='  </audio>';
+                  }
+                  outpuut+='</div>';
+                  outpuut+=' <div class="post-container">';
+                  $.ajax({
+                   url:'mposts/finduser',
+                  method:'GET',
+                   data: {'iduser': iiduser},
+                   datatype:JSON,
+                   cache:false,
+                  async: false,
+                   success:function(datah){
+                    outpuut+='   <img src="'+datah[0].pathimage+'" alt="user" class="profile-photo-md pull-left" />';
+                    outpuut+='   <div class="post-detail">';
+                    outpuut+='     <div class="user-info">';
+                    outpuut+='       <h5><a href="/profile?personid='+datah[0].id+'">'+datah[0].firstname+' '+datah[0].lastname+'</a></h5>';
+                    outpuuut='      <div class="post-container">';
+                    outpuuut+='        <img src="'+datah[0].pathimage+'" alt="user" class="profile-photo-md pull-left" />';
+                    outpuuut+='        <div class="post-detail">';
+                    outpuuut+='          <div class="user-info">';
+                    outpuuut+='            <h5><a href="/profile?personid='+datah[0].id+'" class="profile-link">'+datah[0].firstname+' '+datah[0].lastname+'</a></h5>';
+                   }});
+                  outpuut+=          '<span style="color:#40CC9B;"><span class="following">'+data[j].userwatched+'</span>';
+                  if(data[j].userwatched == 1){
+                    outpuut+=' observador</span>';
+                  }else {
+                    outpuut+=' observadores</span>';
+                  }
+                  outpuut+='       <p class="text-muted">'+data[j].date+'</p>';
+                  outpuut+='     </div>';
+                  outpuut+='     <div class="reaction">';
+                    if(idlike == 1){
+                        outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #8dc63f;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+                    }
+                    else {
+                      outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #d0e7b1;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+                    }
+                  outpuut+='     </div>';
+                  outpuut+='     <div class="line-divider"></div>';
+                  outpuut+='     <div class="post-text">';
+                  outpuut+='       <p>'+data[j].content+'</p>';
+                  outpuut+='     </div>';
+                  outpuut+='   </div>';
+                  outpuut+='      <button class="css3button" onclick="poppost(\''+data[j].id+'\')">Ver Coméntarios</button>';
+                  outpuut+=' </div>';
+                  outpuut+='</div>';
+
+                  }
+                  outpuut+='<div>';
+                  if(page != 0){
+                    outpuut+='<button style="float: left;" onclick="lastposts()"> « anterior </button> ';
+                  }
+                  if(!(range*(page+1) >= allpost)){
+                    outpuut+='<button style="float: right;" onclick="nextposts()"> próximo » </button>';
+                  }
+                  outpuut+='</div>';
+                  $("#timeline_post").html(outpuut);
+              }
+            });}
+          });
+      </script>
+  <div class="row">
+    <!-- ||| -->
+    <div class="col-md-3 static"> <!-- Informação da pessoa -->
+      <div id="sticky-sidebar">
+        <h3><span th:utext="${Person.firstname}"></span> <span th:utext="${Person.lastname}"></span></h3>
+        <p class="text-muted"><span th:src="${Person.category}"></span></p>
+        <div class="feed-item">
+          <div class="live-activity">
+            <p class="profile-link">Sobre</p>
+            <p>Observa: <span class="watchings" th:text="${#lists.size(Person.watching)}"></span></p>
+            <p class="watcheds">Observadores: <span th:text="${#lists.size(Person.watched)}"></span></p>
+            <p class="text-muted">Género: <span th:if="${Person.gender.equals(2)}"> <span>Masculino</span> </span><span th:if="${Person.gender.equals(1)}"> <span>Feminino</span> </span></p>
+            <p class="text-muted">Pais: <span th:utext="${Person.country}"></span></p>
+            <p class="text-muted">Districto: <span th:utext="${Person.district}"></span></p>
+            <p class="text-muted">Email: <span th:utext="${Person.email}"></span></p>
+            <p class="text-muted">Telemóvel: <span th:utext="${Person.phonenumber}"></span></p>
+            <p class="text-muted">Data de Nascimento: <span th:utext="${Person.birthdate}"></span></p>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="live-activity">
+            <p class="profile-link"> <span th:if="${Person.type.equals(0)}"><span> Artista </span></span> <span th:if="${Person.type.equals(1)}"><span> Observador </span></span></p>
+          </div>
+        </div>
+        <button type="button" onclick="startChatting()" class="chatstatu btn btn-primary" style="padding:1px 15px;">Chat</button>
+      </div>
+    </div>
+    <div class="col-md-7"><!-- Fragmento -->
+      <!-- Lista de todos os Posts
+      ================================================= -->
+      <div id="timeline_post">
+
+      </div>
+
+
+    </div>
+    <div class="col-md-2 static"></div>
+  </div>
+</div>

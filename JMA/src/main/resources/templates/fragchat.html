@@ -1,0 +1,59 @@
+<div class="col-md-12">
+  <div th:fragment="chat">
+
+<!-- Chat Room
+================================================= -->
+
+<div class="chat-room">
+  <div  class="row" style="margin: 0 10%!important;">
+    <!-- INCIO LISTA CHATS  -->
+    <div class="text-header">
+      Lista
+    </div>
+    <div class="scrollmenu" id="lista">
+
+
+      <!-- INICIO DO CONTACTO -->
+      
+      <!-- FIM DO CONTACTO -->
+
+    </div>
+    <!-- FIM LISTA CHATS -->
+    <div class="text-header">
+      Conversa
+    </div>
+    <div class="col-md-12 border">
+
+      <!--Chat Messages in Right-->
+      <div class="tab-content scrollbar-wrapper wrapper scrollbar-outer" id="scrollbar">
+        <div class="tab-pane active" id="contact-1">
+          <div class="chat-body" id="chat">
+              <input id="iddchat" type="hidden" value="x">
+              <input id="length" type="hidden" value="x">
+            <ul class="chat-message" id="displaymsg">
+
+            </ul>
+          </div>
+        </div>
+
+
+      </div><!--Chat Messages in Right End-->
+
+      <div class="send-message">
+        <div class="input-group">
+          <input type="text" id="msg" class="form-control" placeholder="Search for...">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" onclick="sendMessage()" style="background: #40CC9B">Go!</button>
+          </span>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+</div>
+
+
+<!--<script type="text/javascript" src="https://code.jquery.com/jquery-1.10.1.min.js"></script>-->

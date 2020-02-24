@@ -1,0 +1,65 @@
+
+<div th:fragment="homepage">
+
+      <div class="container">
+        <div class="row">
+
+          <!-- Newsfeed Common Side Bar Left
+          ================================================= -->
+          <div id="sticky-menu" class="col-md-3 static">
+            <ul class="nav-news-feed">
+              <li><i class="fas fa-newspaper"></i><div><a th:href="@{/feed?main=perfil&frag=galeria&personid=}+ ${User.id}">My Fotos</a></div></li>
+             
+
+
+            </ul><!--news-feed links ends-->
+          </div>
+
+          <div class="col-md-7">
+            <!---Frags- -->
+
+          <th:block th:switch="${frag}">
+
+          <div th:case="post"><span th:include="fragpost::post"></span></div>
+           <div th:case="search"><span th:include="fragsearch::search"></span></div>
+
+          <div th:case="contacts"><span th:include="fragfriendlist::friendlist"></span></div>
+             <div th:case="doevents"><span th:include="doevents::doevents"></span></div>
+            <div th:case="frageventlist"><span th:include="frageventlist::frageventlist"></span></div>
+
+         <!--  <div th:case=""><span th:include=" :: "></span></div>     -->
+
+
+         </th:block>
+
+          </div>
+
+
+
+          <!-- LIST CONTACTS
+          ================================================= -->
+
+
+          <div class="col-md-2 static">
+            <div class="suggestions" id="sticky-sidebar">
+              <h4 class="grey"></h4>
+
+              <!-- MODEL CONTACT ONLINE -->
+                <th:block th:each="friend: ${friends}">
+                  <div class="follow-user">
+                    <img th:src="${friend.pathimage}" alt="" class="profile-photo-sm pull-left" />
+                    <div>
+                      <h5><a th:href="@{/profile?personid=} + ${friend.id}"><span th:text="${friend.firstname}"></span> <span th:text="${friend.lastname}"></span></a></h5>
+                      <p class="text-green"><span th:text="${friend.category}"></span><span>&nbsp;</span></p>
+                    </div>
+                  </div>
+                </th:block>
+
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+<!---  FIM BOCADO --->

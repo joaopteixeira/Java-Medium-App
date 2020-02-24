@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>JV DB</title>
+
+    <!-- Stylesheets
+    ================================================= -->
+		<link rel="stylesheet" href="css/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/ionicons.min.css" />
+    	<link rel="stylesheet" href="css/font-awesome.min.css" />
+		<link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+	<link href="https://fonts.googleapis.com/css?family=Megrim" rel="stylesheet">
+
+    <!--Google Font-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,700i" rel="stylesheet">
+
+	</head>
+	<body>
+
+    <!-- Header
+    ================================================= -->
+		<header id="header-inverse">
+      <nav class="navbar navbar-default navbar-fixed-top menu">
+        <div class="container">
+					<div class="row">
+						<div class="navbar-header col-sm-6">
+
+						
+						</div>
+
+			
+					</div>
+        </div><!-- /.container -->
+      </nav>
+    </header>
+    <!--Header End-->
+
+    <!-- Landing Page Contents
+    ================================================= -->
+
+
+
+							<!--Login-->
+							<div class="tab-pane" id="login">
+								<h3>Login</h3>
+								<p class="text-muted">---------------------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+
+								<!--Login Form-->
+								<form th:action="@{/login}" method="POST">
+									 <div class="row">
+										<div class="form-group col-xs-12">
+											<label for="my-email" class="sr-only">Email</label>
+											<input id="my-email" class="form-control input-group-lg" type="email" name="email" title="Enter Email" placeholder="Your Email"/>
+										</div>
+									</div>
+									<div class="row">
+										<div class="form-group col-xs-12">
+											<label for="my-password" class="sr-only">Password</label>
+											<input id="my-password" class="form-control input-group-lg" type="password" name="password" title="Enter password" placeholder="Password"/>
+										</div>
+									</div>
+
+								<p><a id="forget_pass" href="#" data-toggle="modal" data-target="#myModal">Recovery</a></p>
+								<button class="btn btn-primary" type="submit">Login</button>
+								</form><!--Login Form Ends-->
+								<form th:action="@{/resetPassword}" method="post">
+									<div class="modal fade" id="myModal" role="dialog" style="background-color: rgba(0, 0, 0, 0.3);">
+										<div class="modal-dialog">
+											<!-- Modal content-->
+											<div class="modal-content">
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal">&times;</button>
+													<h4 class="modal-title">recovering</h4>
+												</div>
+												<div class="modal-body">
+
+													<p>email</p>
+													<!-- <p>Esqueceu a sua palavra pass?</p>
+													<p>Insira o seu email.</p> -->
+													<div class="row">
+											<div class="form-group col-xs-8">
+												<label class="sr-only">email</label>
+												<input class="form-control input-group newborder" type="mail" name="usermail" title="Enter Mail" placeholder="Mail"/>
+											</div>
+											</div>
+
+												</div>
+												<div class="modal-footer">
+													<button type="submit" class="btn btn-primary">Recover</button>
+													<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+					
+		
+	
+		
+		
+	
+
+
+
+
+
+
+    <!-- Scripts
+    ================================================= -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+
+		<script src="js/jquery.incremental-counter.js"></script>
+    <script src="js/script.js"></script>
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+	<!-- Isolated Version of Bootstrap, not needed if your site already uses Bootstrap -->
+
+	<!-- Bootstrap Date-Picker Plugin -->
+
+
+
+	<script>
+
+		function getDistricts(dis){
+        var country = 'Portugal';
+        $.ajax({
+          url:'/mcountry/getdistrictbycountryname',
+          data: {'name' : country},
+          dataType: 'JSON',
+          type: "GET",
+          success: function(district){
+            $("#districtoptions").empty();
+
+            var option = '';
+            for(var i = 0; i < district.length; i++){
+              option += '<option value="'+district[i].name+'">'+district[i].name+'</option>';
+            }
+            document.getElementById("districtoptions").innerHTML += option;
+          }
+        });
+      }
+		function detectmob() { 
+		 if(typeof window.orientation !== 'undefined'){
+		    window.location.replace("http://m.artlink.pt");
+		  }
+		}
+    $(document).ready(function(){
+
+
+    	detectmob();
+    	getDistricts($('#districtoptions').val());
+
+      var date_input=$('input[name="date"]'); //our date input has the name "date"
+      var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+      var options={
+        format: 'mm/dd/yyyy',
+        container: container,
+        todayHighlight: true,
+        autoclose: true,
+      };
+      date_input.datepicker(options);
+
+     $("#forget_pass").click(function(){
+     	$("#forget_mail").val("");
+     });
+
+    });
+</script>
+
+	</body>
+</html>

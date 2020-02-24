@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html >
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Rede Social" />
+    <meta name="keywords" content="Social Network" />
+    <meta name="robots" content="index, follow" />
+    <title>JV  | DB</title>
+
+    <link rel="stylesheet" th:href=@{/css/bootstrap.min.css} media="screen">
+    <link rel="stylesheet" th:href=@{/css/style.css}>
+    <link rel="stylesheet" th:href=@{/css/font-awesome.css}>
+    <link rel="stylesheet" th:href=@{/css/ionicons.min.css}>
+    <link rel="stylesheet" th:href=@{/css/font-awesome.min.css}>
+
+    <link rel="stylesheet" th:href=@{/css/font-awesome.min.css}>
+
+    <link rel="stylesheet" th:href=@{/css/pro_icons.css}>
+
+    <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Megrim" rel="stylesheet">
+    <link rel="stylesheet" th:href=@{/css/card.css}>
+    <link href="https://fonts.googleapis.com/css?family=Megrim" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--Google Font-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i,700,700i" rel="stylesheet">
+    <!--Font Awsome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    <link rel="shortcut icon" type="image/png" href="http://localhost/upload/downloadFile/no.png"/>
+    <style type="text/css">
+      .thatwidth{
+        width: 100% !important;
+        margin-bottom: 15px !important;
+      }
+
+      button.css3button {
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        color: #000000;
+        padding: 0px 30px;
+        background-color: #f2f2f2;
+        border-radius: 10px;
+        border: 1px solid #000000;
+        box-shadow:
+      0px 1px 3px rgba(000,000,000,0.5),
+      inset 1px 0px 5px rgba(30,46,11,0);
+    text-shadow:
+      0px -1px 3px rgba(255,255,255,0.8),
+      0px 1px 0px rgba(255,255,255,0.3);
+    }
+
+    button.css3button2 {
+      font-family: 'Roboto', sans-serif;
+      font-size: 14px;
+      color: #ff0000;
+      padding: 0px 10px;
+      background-color: #f2f2f2;
+      border-radius: 10px;
+      box-shadow:
+    0px 1px 3px rgba(000,000,000,0.5),
+    inset 1px 0px 5px rgba(30,46,11,0);
+  text-shadow:
+    0px -1px 3px rgba(255,255,255,0.8),
+    0px 1px 0px rgba(255,255,255,0.3);
+  }
+
+    .css3button:active{
+      position:relative;
+      top:1px;
+    }
+
+    .myBtnscroll {
+      display: none;
+      z-index: 99;
+      font-size: 18px;
+      border: none;
+      outline: none;
+      background-color: #40CC9B;
+      color: white;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 50px;
+    }
+    .BtnScrollUp{
+      position: fixed;
+      bottom: 45px;
+      right: 30px;
+    }
+
+    #page-contents{
+      min-height: 630px;
+    }
+    </style>
+
+
+  </head>
+  <body th:object="${User}">
+
+
+      <script th:inline="javascript">
+
+         /*<![CDATA[*/
+
+
+        var id = /*[[${User.id}]]*/ '';
+        var firstname = /*[[${User.firstname}]]*/ '';
+        var lastname = /*[[${User.lastname}]]*/ '';
+        var email = /*[[${User.email}]]*/ '';
+        var hash = /*[[${session.hash}]]*/ '';
+        var compar = '';
+        var fullname = firstname+' '+lastname;
+
+        /*]]>*/
+
+      console.log(id);
+      console.log(fullname);
+      console.log(hash);
+
+      var date = new Date();
+      const messages = document.getElementById('chat');
+      function scrollToBottom() {
+        document.getElementById('scrollbar').scrollTop=(document.getElementById('scrollbar').scrollHeight)
+      }
+
+      function actchat(x, y){
+        eraseCookie('id_chat');
+        eraseCookie('img_chat');
+          console.log('chat: '+x);
+          console.log('img: '+y);
+          $('#displaymsg').empty();
+          $.ajax({
+            url:'/mchat/getchatbyid',
+            data:{ 'idchat' : x, 'hash' : hash },
+            dataType:'JSON',
+            type:'GET',
+            success: function (data){
+              var mensagem = '';
+              var output = '';
+              var tempo = '';
+              document.getElementById("iddchat").value = data.id;
+              document.getElementById("length").value = data.mensagens.length;
+
+              for (var i = 0; i < data.mensagens.length; i++) {
+
+                 $.ajax({
+                  url:'/mchat/getdate',
+                  data:{ 'data' : data.mensagens[i].date },
+                  dataType:'text',
+                  type:'GET',
+                  success: function (datah){
+                    tempo = datah;
+                  },
+                  async: false,
+                  error: function (xhe) {
+                    console.log("err: "+xhe);
+                  }
+                });
+
+                if(data.mensagens[i].user.id == id){
+                  mensagem += '<li class="remetente msn">';
+                  mensagem += '<div class="chat-item">';
+                  mensagem += '   <div class="chat-item-header">';
+                  mensagem += '      <h5>Eu</h5>';
+                  mensagem += '      <small class="text-muted" id="'+i+'">'+tempo+'</small>';
+                  mensagem += '    </div>';
+                  mensagem += '    <p>'+data.mensagens[i].msg+'</p>';
+                  mensagem += ' </div>';
+                  mensagem += '</li>';
+                }
+                else{
+                  mensagem += '<li class="destinatario msn">';
+                  mensagem += '<img src="'+y+'" alt="" class="profile-photo-sm pull-left" />';
+                  mensagem += '<div class="chat-item">';
+                  mensagem += '  <div class="chat-item-header">';
+                  mensagem += '    <h5>'+data.mensagens[i].user.firstname+' '+data.mensagens[i].user.lastname+'</h5>';
+                  mensagem += '    <small class="text-muted">'+tempo+'</small>';
+                  mensagem += '  </div>';
+                  mensagem += '  <p>'+data.mensagens[i].msg+'</p>';
+                  mensagem += '</div>';
+                  mensagem += '</li>';
+                }
+
+              }
+                document.getElementById("displaymsg").innerHTML = mensagem;
+              scrollToBottom();
+            },
+            error: function (xhe) {
+              console.log("err: "+xhe);
+            }
+          });
+
+
+        }
+
+        function sendMessage(){
+          var idchat = document.getElementById("iddchat").value;
+          var msg = document.getElementById("msg").value;
+
+          if(msg != ""){
+            $.ajax({
+            url: '/mchat/sendmsg',
+            data:{'hash':hash, 'idchat': idchat, 'msg': msg},
+            type:'GET',
+            dataType:'JSON',
+              success: function (data){
+                $('#msg').val("");
+              },
+              error: function(xhe){
+                console.log("erro:"+xhe);
+              }
+          });
+          }
+
+
+        }
+
+        function getEvents(ha,dis){
+          $("#listevents").empty();
+          $.ajax({
+          url: '/mevent/getbydistrict',
+          data: { 'hash' : ha, 'district' : dis},
+          dataType: 'JSON',
+          type: "GET",
+          success: function (events){
+              var cardevent='';
+
+            for(var i =0; i<events.length;i++){
+              var title = events[i].title;
+
+              var description = '';
+              if(events[i].description != null){
+                description = events[i].description;
+              }
+              var address = events[i].address;
+              var destr = events[i].district.name;
+              var category = events[i].category.description;
+              var iduser = events[i].iduser;
+              var imgthumb = '';
+              if(category=="Cinema"){
+                imgthumb='cinema.png';
+              }else if(category == "Teatro"){
+                imgthumb='mask.png';
+              }else if(category == "Arte"){
+                imgthumb='paint.png';
+              }else if(category == "Musica"){
+                imgthumb='music.png';
+              }
+
+              var pathimg = events[i].pathimage;
+              var subcategory = '';
+              if(events[i].category.subCategory[0].description != null){
+                var subcategory = events[i].category.subCategory[0].description;
+              }
+
+              var date = events[i].date;
+              cardevent = '<div class="index-content">';
+              cardevent += '    <div class="card">';
+              cardevent += '      <div class="thumb-cont">';
+              cardevent += '        <img src="http://localhost.pt/upload/downloadFile/'+imgthumb+'">';
+              cardevent += '        <div class="ismine"> <img class="elicon icon-card" src="'+pathimg+'"></div>';
+              cardevent += '      </div>';
+              cardevent += '        ';
+              cardevent += '        <h4>'+title+'</h4>';
+              cardevent += '        ';
+              cardevent += '        <p>'+description+'</p>';
+              cardevent += '        <p>'+address+'</p>';
+              cardevent += '        <p>'+category+' | '+subcategory+'</p>';
+              cardevent += '        <p style="text-align: right;">Disponível até: '+date+'</p>';
+
+              cardevent += '    </div>';
+              cardevent += '</div>';
+
+              document.getElementById("listevents").innerHTML+= cardevent;
+
+            }
+
+
+
+          }
+
+          });
+        }
+
+        function getSubCategorias(ha, cat){
+        $.ajax({
+          url:"/mcategory/getcategorybyname",
+          data: {'hash':ha, 'description':cat},
+          dataType: 'JSON',
+          type: 'GET',
+          success: function (subcategory){
+            $("#subcategoryevent").empty();
+            var option = '';
+            for(var i = 0; i < subcategory.length; i++){
+              option += '<option value="'+subcategory[i].description+'">'+subcategory[i].description+'</option>';
+            }
+
+            document.getElementById("subcategoryevent").innerHTML += option;
+          }
+
+        });
+      }
+
+      function clickSearchEvent(){
+        dis = $("#districtoptions").val();
+        getEvents(hash,dis);
+
+      }
+
+      function getDistricts(dis){
+        var country = 'Portugal';
+        $.ajax({
+          url:'/mcountry/getdistrictbycountryname',
+          data: {'name' : country},
+          dataType: 'JSON',
+          type: "GET",
+          success: function(district){
+            $("#districtoptions").empty();
+
+            var option = '';
+            for(var i = 0; i < district.length; i++){
+              option += '<option value="'+district[i].name+'">'+district[i].name+'</option>';
+            }
+            document.getElementById("districtoptions").innerHTML += option;
+          }
+        });
+      }
+     $(document).ready(function(){
+     getEvents(hash, 'Setúbal');
+
+          getSubCategorias(hash,$('#categoryevent').val());
+
+          getDistricts($('#districtoptions').val());
+
+          $('#categoryevent').change(function(){
+              var cat = $('#categoryevent').val();
+              getSubCategorias(hash,cat);
+
+          });
+
+      setInterval(function() {
+
+
+          $('#chat');
+          $('#lista');
+
+          var fgh = hash;
+            $.ajax({
+            url: '/mchat/get',
+            data: { 'hash' : fgh  },
+            dataType: 'JSON',
+            type: "GET",
+            success: function (chats) {
+
+                //string = JSON.stringify(savingStatu);
+                //alert((savingStatu+'').length);
+                //console.log(chats.length);
+                //alert(id);
+                //len = chats.length;
+
+                var dif = JSON.stringify(chats);
+
+                      if(compar != dif){
+                        compar = dif;
+
+                        $('#lista').empty();
+                        for(var k = 0; k < chats.length; k++){
+                          for(var i = 0; i < chats[k].users.length; i++) {
+                            if(id != chats[k].users[i].id){
+                              //cont++;
+                              //console.log(cont);
+                              //console.log(chats[k].users[i].pathimage);
+                              var notreaded = 0;
+
+
+                              for(var j = 0; j < chats[k].mensagens.length; j++){
+                                if(chats[k].mensagens[j].estado == 1 && chats[k].mensagens[j].user.id != id)
+                                  notreaded++;
+                              }
+                              var imgpath = chats[k].users[i].pathimage;
+                              output='';
+                              output+='<div  onclick="actchat(\''+chats[k].id+'\',\''+imgpath+'\')" class="iconmessages '+imgpath+'" >';
+                              output+='  <a>'
+                              output+='     <img src="'+imgpath+'" alt="" class="profile-photo-sm pull-left" />';
+                              if(notreaded != 0)
+                                output+='    <div class="alertmsg"> <h6>'+notreaded+'</h6> </div>';
+                              output+='  </a>';
+                              output+='</div>';
+                             // console.log(output);
+                              document.getElementById("lista").innerHTML += output;
+                            }
+                          }
+                        }
+                      }
+            },
+            error: function (xhe) {
+                console.log("err"+xhe);
+              }
+            });
+
+          }, 1000);
+
+        if(document.getElementById("iddchat").value){
+          setInterval(function() {
+              var idchatt = document.getElementById("iddchat").value;
+              var lengthh = document.getElementById("length").value;
+
+              if(idchatt != "x" && lengthh != "x"){
+                $.ajax({
+                url:'/mchat/getchatbyid',
+                data:{ 'idchat' : idchatt, 'hash' : hash },
+                dataType: 'JSON',
+                type: "GET",
+                success: function (data){
+                  var mensagem;
+                  if (data.mensagens.length > lengthh){
+                    for (var i = lengthh; i < data.mensagens.length; i++) {
+
+
+                      $.ajax({
+                        url:'/mchat/getdate',
+                        data:{ 'data' : data.mensagens[i].date },
+                        dataType:'text',
+                        type:'GET',
+                        success: function (datah){
+                          tempo = datah;
+                        },
+                        async: false,
+                        error: function (xhe) {
+                          console.log("err: "+xhe);
+                        }
+                      });
+
+                    if(data.mensagens[i].user.id == id){
+                      mensagem = '<li class="remetente chat-mens">';
+                      mensagem += '<div class="chat-item">';
+                      mensagem += '   <div class="chat-item-header">';
+                      mensagem += '      <h5>Eu</h5>';
+                      mensagem += '      <small class="text-muted">'+tempo+'</small>';
+                      mensagem += '    </div>';
+                      mensagem += '    <p>'+data.mensagens[i].msg+'</p>';
+                      mensagem += ' </div>';
+                      mensagem += '</li>';
+                    }
+                    else{
+                      mensagem = '<li class="destinatario chat-mens">';
+                      mensagem += '<img src="'+data.mensagens[i].pathimage+'" alt="" class="profile-photo-sm pull-left" />';
+                      mensagem += '<div class="chat-item">';
+                      mensagem += '  <div class="chat-item-header">';
+                      mensagem += '    <h5>'+data.mensagens[i].user.firstname+' '+data.mensagens[i].user.lastname+'</h5>';
+                      mensagem += '    <small class="text-muted">'+tempo+'</small>';
+                      mensagem += '  </div>';
+                      mensagem += '  <p>'+data.mensagens[i].msg+'</p>';
+                      mensagem += '</div>';
+                      mensagem += '</li>';
+                    }
+                    $("#displaymsg").append(mensagem);
+                    document.getElementById("iddchat").value = data.id;
+                    document.getElementById("length").value = data.mensagens.length;
+                    $('#displaymsg').scrollTop($('#displaymsg').scrollHeight)
+                    }
+                    scrollToBottom();
+                  }
+
+                },
+                error: function (xhe) {
+                    console.log("err"+xhe);
+                  }
+                });
+              }
+
+          },1000);
+        }
+
+       });
+
+
+    </script>
+
+
+
+
+ <script th:inline="javascript">
+    /*<![CDATA[*/
+         var id = /*[[${session.User.id}]]*/;
+         var pathimage = /*[[${session.User.pathimage}]]*/;
+         var firstname = /*[[${session.User.firstname}]]*/;
+         var lastname = /*[[${session.User.lastname}]]*/;
+         var hash = /*[[${session.hash}]]*/;
+       /*]]>*/
+
+      var allpost;
+      var page = 0;
+      var range = 20;
+
+      window.onscroll = function() {scrollFunction()};
+
+      function scrollFunction() {
+          if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+              document.getElementById("myBtn").style.display = "block";
+          } else {
+              document.getElementById("myBtn").style.display = "none";
+          }
+      }
+
+      // When the user clicks on the button, scroll to the top of the document
+      function topFunction() {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+      }
+
+
+      function getpost(){
+        var tiipo = 0;
+        var iiduser= '';
+        var idpost= '';
+        var outpuut = '';
+        var outpuuut = '';
+        var idlike = 0;
+          $.ajax({
+            url:'mposts/allposts',
+            method:'GET',
+            data: {iduser: iiduser, idpost: idpost, tipo: tiipo, sizepost: allpost, page:page, range: range},
+            datatype:JSON,
+            cache:false,
+            success:function(data){
+              outpuut+='<div class="modal fade" id="Mymodal" tabindex="-1" role="dialog" aria-hidden="false">';
+              outpuut+='  <div class="modal-dialog modal-lg" id="postshow">';
+              outpuut+='  </div>';
+              outpuut+='</div> ';
+              var likes;
+              for (var j = 0; j < data.length; j++){
+                likes=0;
+                idlike = 0;
+                for (var k = 0; k < data[j].likes.length; k++){
+                  likes += 1;
+                  if(data[j].likes[k] == id){
+                    idlike = 1;
+                  }
+                }
+                outpuut+='<div class="post-content">';
+                outpuut+='<div class="media" data-toggle="modal" data-target=".modal-'+data[j].iduser+'">';
+
+                if(data[j].media.typemedia == 0){
+                  outpuut+='  <img src="'+data[j].media.pathfile+'"  class="img-responsive post-image" style="height: 500px; object-fit: contain;">';
+                }
+                if(data[j].media.typemedia == 1){
+                  outpuut+='  <iframe class="post-video" src="'+data[j].media.pathfile+'" width="570" height="315"></iframe>';
+                }
+                if(data[j].media.typemedia == 2){
+                  outpuut+='  <audio controls> ';
+                  outpuut+='    <source src="'+data[j].media.pathfile+'" type="audio/mpeg">';
+                  outpuut+='  Your browser does not support the audio element.';
+                  outpuut+='  </audio>';
+                }
+                outpuut+='</div>';
+                outpuut+=' <div class="post-container">';
+                iiduser = data[j].iduser;
+                $.ajax({
+                 url:'mposts/finduser',
+                method:'GET',
+                 data: {'iduser': iiduser},
+                 datatype:JSON,
+                 cache:false,
+                async: false,
+                 success:function(datah){
+                  outpuut+='-';
+                  outpuut+='   <div class="post-detail">';
+                  outpuut+='     <div class="user-info">';
+                  outpuut+='       <h5><a href="/profile?personid='+datah[0].id+'">'+datah[0].firstname+' '+datah[0].lastname+'</a></h5>';
+                  outpuuut='      <div class="post-container">';
+                  outpuuut+='';
+                  outpuuut+='        <div class="post-detail">';
+                  outpuuut+='          <div class="user-info">';
+                  outpuuut+='            <h5><a href="/profile?personid='+datah[0].id+'" class="profile-link">'+datah[0].firstname+' '+datah[0].lastname+'</a></h5>';
+                 }});
+                outpuut+=          '<span style="color:#ff0000;"> <span class="following">'+data[j].userwatched+'</span>';
+                if(data[j].userwatched == 1){
+                  outpuut+='</span>';
+                }else {
+                  outpuut+='</span>';
+                }
+                outpuut+='       <p class="text-muted">'+data[j].date+'</p>';
+                outpuut+='     </div>';
+                outpuut+='     <div class="reaction">';
+                if(idlike == 1){
+                    outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')">'+likes+'</a>';
+                }
+                else {
+                  outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #ff0000;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+                }
+                outpuut+='     </div>';
+                outpuut+='     <div class="line-divider"></div>';
+                outpuut+='     <div class="post-text">';
+                outpuut+='       <p>'+data[j].content+'</p>';
+                outpuut+='     </div>';
+                outpuut+='   </div>';
+                outpuut+='      <button class="css3button" onclick="poppost(\''+data[j].id+'\')">More</button>';
+                outpuut+=' </div>';
+                outpuut+='</div>';
+
+                }
+                outpuut+='<div>';
+                if(page != 0){
+                  outpuut+='<button class="css3button2" style="float: left;" onclick="lastposts()"> <i class="fal fa-chevron-circle-left"></i> </button> ';
+                }
+                if(!(range*(page+1) >= allpost)){
+                  outpuut+='<button class="css3button2" style="float: right;" onclick="nextposts()"> <i class="fal fa-chevron-circle-right"></i></button>';
+                }
+                outpuut+='</div>';
+                $("#posts").html(outpuut);
+            },error:function(erh){
+            }
+        });
+      }
+
+
+    function poppost(idpost){
+    var idposty = idpost;
+     var outpuut='';
+     var iiduser = '';
+     var tiipo = 1;
+     var idusercontent;
+     var temp;
+     var last_post = 0;
+
+         $.ajax({
+          url:'mposts/allposts',
+          method:'GET',
+          data: {iduser: iiduser, idpost: idposty, tipo: tiipo, sizepost: allpost, page:page, range: range},
+          datatype:JSON,
+          cache:false,
+          success:function(data){
+           var likes;
+           var idlike = 0;
+           for (var j = 0; j < data.length; j++){
+             likes=0;
+             idlike = 0;
+             for (var k = 0; k < data[j].likes.length; k++){
+               likes += 1;
+               if(data[j].likes[k] == id){
+                 idlike = 1;
+               }
+             }
+             outpuut+='        <div class="modal-content">';
+             outpuut+='          <div class="post-content">';
+             outpuut+='<div class="media">';
+
+             if(data[j].media.typemedia == 0){
+               outpuut+='  <img src="'+data[j].media.pathfile+'"  class="img-responsive post-image" style="height: 500px; object-fit: contain;">';
+             }
+             if(data[j].media.typemedia == 1){
+               outpuut+='  <iframe class="post-video" src="'+data[j].media.pathfile+'" style="position: relative;left: 160px;" width="570" height="315"></iframe>';
+             }
+             if(data[j].media.typemedia == 2){
+               outpuut+='  <audio controls> ';
+               outpuut+='    <source src="'+data[j].media.pathfile+'" type="audio/mpeg">';
+               outpuut+='  Your browser does not support the audio element.';
+               outpuut+='  </audio>';
+             }
+             outpuut+='</div>';
+             outpuut+='            <div class="post-container">';
+             iiduser = data[j].iduser;
+             $.ajax({
+              url:'mposts/finduser',
+              method:'GET',
+              data: {'iduser': iiduser},
+              datatype:JSON,
+              cache:false,
+             async: false,
+              success:function(datahh){
+               outpuut+='   <img src="'+datahh[0].pathimage+'" alt="user" class="profile-photo-md pull-left">';
+               outpuut+='   <div class="post-detail">';
+               outpuut+='     <div class="user-info">';
+               outpuut+='       <h5><a href="/profile?personid='+datahh[0].id+'">'+datahh[0].firstname+' '+datahh[0].lastname+'</a></h5>';
+              }});
+              outpuut+=          '<span style="color:#000000;"> <span class="following">'+data[j].userwatched+'</span>';
+             if(data[j].userwatched == 1){
+               outpuut+='</span>';
+             }else {
+               outpuut+='</span>';
+             }
+             outpuut+='                <p class="text-muted">'+data[j].date+'</p>';
+             outpuut+='                </div>';
+             outpuut+='                <div class="reaction">';
+             if(idlike == 1){
+                 outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #8dc63f;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+             }
+             else {
+               outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #d0e7b1;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+             }
+             outpuut+='                </div>';
+             outpuut+='                <div class="line-divider"></div>';
+             outpuut+='                <div class="post-text">';
+             outpuut+='                  <p>'+data[j].content+'</p>';//post
+             outpuut+='                </div>';
+             outpuut+='                <div id="comment">';
+             for (var i = 0; i < data[j].comments.length; i++){
+               idusercontent = data[j].comments[i].iduser;
+               outpuut+='                <div class="line-divider"></div>';
+               outpuut+='                <div class="post-comment">';
+               $.ajax({
+              url:'mposts/finduser',
+             method:'GET',
+              data: {'iduser': idusercontent},
+              datatype:JSON,
+              cache:false,
+             async: false,
+              success:function(datah){
+               outpuut+='                  <img src="'+datah[0].pathimage+'" alt="" class="profile-photo-sm" />';
+               outpuut+='                  <p><a href="/profile?personid='+datah[0].id+'" class="profile-link">'+datah[0].firstname+' '+datah[0].lastname+' </a>';
+              }});
+               outpuut+=data[j].comments[i].content+'</p>';
+               outpuut+='                </div>';
+             }
+              outpuut+='                  </div>';
+             outpuut+='                    <div class="form-group" style="width: 100% !important;">';
+
+             outpuut+='                    </div>';
+
+             outpuut+='                <div class="post-comment">';
+             outpuut+='                  <img src="'+pathimage+'" alt="" class="profile-photo-sm">';//<-img do sess
+             outpuut+='                    <div style="width: 80%;float: right;"><input type="text"maxlength="80" class="form-control" placeholder="Comentar" id="comentario"></div>';
+             outpuut+='                  &nbsp;&nbsp;&nbsp;<button style="height:35px;width:120px;relative;top: 4px;"class="btn btn-primary pull-right" type="button" onclick="addcoment(\''+data[j].id+'\')">Publicar</button>';
+             outpuut+='              </div>';
+             outpuut+='            </div>';
+             outpuut+='          </div>';
+             outpuut+='        </div>';
+           }
+             $("#Mymodal").modal("show");
+             $("#postshow").html(outpuut);
+         }
+     });
+   }
+
+   function like(x){
+     var classlike = "."+x;
+     var content;
+     $.ajax({
+      url:'mposts/like',
+      method:'GET',
+      data: {'id_post': x, 'id_user': id},
+      cache:false,
+      success:function(){
+        $.ajax({
+         url:'mposts/getlikes',
+         method:'GET',
+         data: {'id_post': x},
+         cache:false,
+         async: false,
+         success:function(data){
+           var likes;
+           var idlike = 0;
+           for (var j = 0; j < data.length; j++){
+             likes=0;
+             idlike = 0;
+             for (var k = 0; k < data[j].likes.length; k++){
+               likes += 1;
+               if(data[j].likes[k] == id){
+                 idlike = 1;
+               }
+             }
+           }
+           if(idlike == 1){
+             content ="<i style='color: #8dc63f;' class='icon ion-thumbsup'></i> "+likes;
+           }else {
+            content ="<i style='color: #d0e7b1;' class='icon ion-thumbsup'></i> "+likes;
+           }
+           $(classlike).html(content);
+        }});
+      }});
+   }
+
+   function addcoment(x){
+     var comentario = $("#comentario").val();
+     var mensagem='';
+     if(comentario != ""){
+       $.ajax({
+         url:'mposts/addcomment',
+         method:'GET',
+         data: {'hash': hash, idpost: x, content: comentario},
+         datatype:JSON,
+         cache:false,
+         success:function(data){}});
+         mensagem = '<div class="line-divider"></div><div class="post-comment"><img src="'+pathimage+'" alt="" class="profile-photo-sm" /><p><a class="profile-link">'+firstname+' '+lastname+' </a>'+comentario+'</p></div>';
+         $("#comment").append(mensagem);
+         $("#comentario").val("");
+     }
+   }
+
+   function SizePost(){
+     $.ajax({
+       url:'mposts/sizeposts',
+       method:'GET',
+       cache:false,
+       async: false,
+       success:function(data){
+         allpost = data;
+       }});
+   }
+
+   function nextposts(){
+     page += 1;
+     getpost();
+     document.body.scrollTop = 0;
+     document.documentElement.scrollTop = 0;
+   }
+   function lastposts(){
+     page -= 1;
+     getpost();
+   }
+
+  function watching(){
+     var url =window.location;
+     let params = new URL(url).searchParams;
+     var iiidusers= params.get('personid');
+     $.ajax({
+       url:'muser/addwatching',
+       method:'GET',
+       data: {hash: hash, iduser: iiidusers},
+       cache:false,
+       success:function(data){
+         if(data == "aceite"){
+           $("#btnObservar").text("Parar de ");
+         }else{
+           $("#btnObservar").text("Começar a ");
+         }
+         $.ajax({
+           url:'muser/sizeObser',
+           method:'GET',
+           data: {iduser: iiidusers},
+           cache:false,
+           success:function(data){
+             $(".watcheds").empty();
+             $(".watcheds").html(": <span>"+data+"</span>");
+             getwatching();
+             }
+           });
+       }
+     });
+   }
+   function getwatching(){
+     var url =window.location;
+     let params = new URL(url).searchParams;
+     var idusers= params.get('personid');
+     var watcheds='';
+     $.ajax({
+       url:'muser/getwatchedsById',
+       method:'GET',
+       data: {id_user: idusers},
+       cache:false,
+       success:function(data){
+        if(data.length != 0){
+            for (var j = 0; j < data.length; j++){
+                watcheds+='  <div class="col-md-6 col-sm-6">';
+                watcheds+='    <div class="friend-card">';
+                watcheds+='      <div class="img-responsive cover" style="height: 90px; background-color: #e6e6e6;"></div>';
+                watcheds+='      <div class="card-info" >';
+                watcheds+='        <img src="'+data[j].pathimage+'" alt="user" class="profile-photo-lg" style="background-color: white;"/>';
+                watcheds+='        <div class="friend-info">';
+                watcheds+='          <h5><a href="/profile?personid='+data[j].id+'" class="profile-link">'+data[j].firstname+' '+data[j].lastname+'</a></h5>';
+                if(data[j].subcategory != null){
+                 watcheds+='          <p> '+data[j].subcategory+' </p>';
+                }
+                watcheds+='        </div>';
+                watcheds+='      </div>';
+                watcheds+='    </div>';
+                watcheds+='  </div>';
+              }
+            }else{
+              watcheds+='<p> Não tem Watchers </p>';
+            }
+          $("#Watcheds").html(watcheds);
+         }
+       });
+   }
+
+   function startChatting(){
+     var url =window.location;
+     let params = new URL(url).searchParams;
+     var idusers= params.get('personid');
+     var id_chat;
+     var img;
+     $.ajax({
+       url:'mchat/createchat',
+       method:'GET',
+       data: {hash: hash, iduser: idusers},
+       cache:false,
+       success:function(data){
+         for (var i = 0; i < data.users.length; i++) {
+           if(data.users[i].id == idusers){
+             img = data.users[i].pathimage;
+             createCookie('img_chat',img,'1');
+           }
+         }
+         id_chat = data.id;
+         createCookie('id_chat',id_chat,'1');
+         window.location.href = "/chat?main=chat&personid=you";
+       }
+     });
+   }
+
+
+   function eraseCookie(name) {
+     createCookie(name,"",-1);
+   }
+
+   function createCookie(name,value,days) {
+     if (days) {
+       var date = new Date();
+       date.setTime(date.getTime()+(days*24*60*60*1000));
+       var expires = "; expires="+date.toGMTString();
+     }
+     else var expires = "";
+     document.cookie = name+"="+value+expires+"; path=/";
+   }
+
+   function getCookie(name) {
+      var dc = document.cookie;
+      var prefix = name + "=";
+      var begin = dc.indexOf("; " + prefix);
+      if (begin == -1) {
+          begin = dc.indexOf(prefix);
+          if (begin != 0) return null;
+      }
+      else
+      {
+        begin += 2;
+        var end = document.cookie.indexOf(";", begin);
+        if (end == -1) {
+        end = dc.length;
+        }
+    }
+    return decodeURI(dc.substring(begin + prefix.length, end));
+}
+</script>
+
+<script th:inline="javascript">
+     $(document).ready(function(){
+       /*<![CDATA[*/
+       var id = /*[[${session.User.id}]]*/ '';
+      /*]]>*/
+       $(".media-preview").hide();
+        $("#preview-post").hide();
+        $("#perfil_statu").hide();
+        $(".chatstatu").hide();
+        $("#btnObserv").hide();
+        $("#natzc4").hide();
+        var numer = 3;
+        var tiipo = 0;
+        var iiduser= '';
+        var idpost= '';
+        var outpuut = '';
+        var outpuuut = '';
+        var idlike = 0;
+        SizePost();
+          $.ajax({
+            url:'mposts/allposts',
+            method:'GET',
+            data: {iduser: iiduser, idpost:  idpost, tipo: tiipo, sizepost: allpost, page:page, range: range},
+            datatype:JSON,
+            cache:false,
+            success:function(data){
+              outpuut+='<div class="modal fade" id="Mymodal" tabindex="-1" role="dialog" aria-hidden="false">';
+              outpuut+='  <div class="modal-dialog modal-lg" id="postshow">';
+              outpuut+='  </div>';
+              outpuut+='</div> ';
+              var likes;
+              for (var j = 0; j < data.length; j++){
+                likes=0;
+                idlike = 0;
+                for (var k = 0; k < data[j].likes.length; k++){
+                  if(data[j].likes[k] == id){
+                    idlike = 1;
+                  }
+                  likes += 1;
+                }
+                outpuut+='<div class="post-content">';
+                outpuut+='<div class="media" data-toggle="modal" data-target=".modal-'+data[j].iduser+'">';
+
+                if(data[j].media.typemedia == 0){
+                  outpuut+='  <img src="'+data[j].media.pathfile+'"  class="img-responsive post-image" style="height: 500px; object-fit: contain;">';
+                }
+                if(data[j].media.typemedia == 1){
+                  outpuut+='  <iframe class="post-video" src="'+data[j].media.pathfile+'" width="570" height="315"></iframe>';
+                }
+                if(data[j].media.typemedia == 2){
+                  outpuut+='  <audio controls> ';
+                  outpuut+='    <source src="'+data[j].media.pathfile+'" type="audio/mpeg">';
+                  outpuut+='  Your browser does not support the audio element.';
+                  outpuut+='  </audio>';
+                }
+                outpuut+='</div>';
+                outpuut+=' <div class="post-container">';
+                iiduser = data[j].iduser;
+                $.ajax({
+                 url:'mposts/finduser',
+                method:'GET',
+                 data: {'iduser': iiduser},
+                 datatype:JSON,
+                 cache:false,
+                async: false,
+                 success:function(datah){
+                  outpuut+='   <img src="'+datah[0].pathimage+'" alt="user" class="profile-photo-md pull-left" />';
+                  outpuut+='   <div class="post-detail">';
+                  outpuut+='     <div class="user-info">';
+                  outpuut+='       <h5><a href="/profile?personid='+datah[0].id+'">'+datah[0].firstname+' '+datah[0].lastname+'</a></h5>';
+                  outpuuut='      <div class="post-container">';
+                  outpuuut+='        <img src="'+datah[0].pathimage+'" alt="user" class="profile-photo-md pull-left" />';
+                  outpuuut+='        <div class="post-detail">';
+                  outpuuut+='          <div class="user-info">';
+                  outpuuut+='            <h5><a href="/profile?personid='+datah[0].id+'" class="profile-link">'+datah[0].firstname+' '+datah[0].lastname+'</a></h5>';
+                 }});
+                outpuut+=          '<span style="color:#000000;"> <span class="following">'+data[j].userwatched+'</span>';
+                if(data[j].userwatched == 1){
+                  outpuut+='</span>';
+                }else {
+                  outpuut+='</span>';
+                }
+                outpuut+='       <p class="text-muted">'+data[j].date+'</p>';
+                outpuut+='     </div>';
+                outpuut+='     <div class="reaction">';
+                if(idlike == 1){
+                    outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #8dc63f;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+                }
+                else {
+                  outpuut+='       <a  class="btn text-green '+data[j].id+'" onclick="like(\''+data[j].id+'\')"><i style="color: #d0e7b1;" class="icon ion-thumbsup"></i>'+likes+'</a>';
+                }
+                outpuut+='     </div>';
+                outpuut+='     <div class="line-divider"></div>';
+                outpuut+='     <div class="post-text">';
+                outpuut+='       <p>'+data[j].content+'</p>';
+                outpuut+='     </div>';
+                outpuut+='   </div>';
+                outpuut+='      <button class="css3button" onclick="poppost(\''+data[j].id+'\')">More</button>';
+                outpuut+=' </div>';
+                outpuut+='</div>';
+
+                }
+                outpuut+='<div>';
+                if(page != 0){
+                  outpuut+='<button class="css3button2" style="float: left;" onclick="lastposts()"> <i class="fal fa-chevron-circle-left"></i> </button> ';
+                }
+                if(!(range*(page+1) >= allpost)){
+                  outpuut+='<button class="css3button2" style="float: right;" onclick="nextposts()"> <i class="fal fa-chevron-circle-right"></i> </button>';
+                }
+                outpuut+='</div>';
+                $("#posts").html(outpuut);
+            },error:function(erh){
+            }
+        });
+
+
+        $("#natzc1").click(function(){
+          numer = 0;
+          $('#file-input').attr('accept','image/*');
+
+        });
+        $("#natzc2").click(function(){
+          numer = 1;
+          $("#tipo_media").attr("value","1");
+          document.getElementById("file-input").value = "";
+          document.getElementById("video-input").value = "https://www.youtube.com/embed/";
+          $('#output1').attr('src','');
+          $('#output3').attr('src','');
+          $('#output4').attr('src','');
+          $(".media-preview").hide();
+          $("#natzc4").show();
+          $("#natc2").show();
+        });
+
+        $("#natzc3").click(function(){
+          numer = 2;
+          $('#file-input').attr('accept','audio/*');
+        });
+
+
+          $(document).on("change", "#file-input", function(evt) {
+              if (numer == 0){
+                $("#tipo_media").attr("value","0");
+                $('#output2').attr('src','');
+                $('#output3').attr('src','');
+                $('#output4').attr('src','');
+                $("#natzc4").hide();
+                $(".media-preview").hide();
+                $("#natc1").show();
+              }
+              if (numer == 2){
+                var $source = $('#output3');
+                var $source2 = $('#output4');
+                $source[0].src = URL.createObjectURL(this.files[0]);
+                $source2[0].src = URL.createObjectURL(this.files[0]);
+                $source.parent()[0].load();
+                $source2.parent()[0].load();
+                document.getElementById("video-input").value = "";
+                $('#output').attr('src','');
+                $('#output2').attr('src','');
+                $("#tipo_media").attr("value","2");
+                $("#natzc4").hide();
+                $(".media-preview").hide();
+                $("#natc3").show();
+              }
+           });
+
+           $(document).on("click", "#natzc5", function() {
+             document.getElementById("file-input").value = "";
+              $('#output').attr('src','');
+              $('#output2').attr('src','');
+              $('#output3').attr('src','');
+              $('#output4').attr('src','');
+              $("#tipo_media").attr("value","3");
+              $("#natzc4").hide();
+              $(".media-preview").hide();
+            });
+
+          $("#start").on("change keyup paste", function() {
+              var textarea = $("#start").val();
+              if(textarea != "") {
+                $("#preview-post").show();
+              }else {
+                $("#preview-post").hide();
+              }
+          });
+
+          $("#video-input").on("change keyup paste", function() {
+              var textarea = $("#video-input").val();
+              $("#url-input").val(textarea);
+              $('#output2').attr('src',textarea);
+          });
+            var url = window.location;
+            let params = new URL(url).searchParams;
+            var iiduser= params.get('personid');
+            if(id == iiduser){
+              $("#perfil_statu").show();
+            }else{
+              $("#btnObserv").show();
+              $(".chatstatu").show();
+            }
+            $.ajax({
+              url:'muser/comparObser',
+              method:'GET',
+              data: {iduser: iiduser, idsession: id},
+              cache:false,
+              success:function(data){
+                if(data == "true"){
+                  $("#btnObserv").text("Parar de Observar");
+                }else{
+                  $("#btnObserv").text("Começar a Observar");
+                }
+              }});
+
+              var watcheds='';
+              $.ajax({
+                url:'muser/getwatchedsById',
+                method:'GET',
+                data: {id_user: iiduser},
+                cache:false,
+                success:function(data){
+                    if(data.length != 0){
+                      for (var j = 0; j < data.length; j++){
+                       watcheds+='  <div class="col-md-6 col-sm-6">';
+                       watcheds+='    <div class="friend-card">';
+                       watcheds+='      <div class="img-responsive cover" style="height: 90px; background-color: #e6e6e6;"></div>';
+                       watcheds+='      <div class="card-info">';
+                       watcheds+='        <img src="'+data[j].pathimage+'" alt="user" class="profile-photo-lg" style="background-color: white;"/>';
+                       watcheds+='        <div class="friend-info">';
+                       watcheds+='          <h5><a href="/profile?personid='+data[j].id+'" class="profile-link">'+data[j].firstname+' '+data[j].lastname+'</a></h5>';
+                       if(data[j].subcategory != null){
+                        watcheds+='          <p> '+data[j].subcategory+' </p>';
+                       }
+                       watcheds+='        </div>';
+                       watcheds+='      </div>';
+                       watcheds+='    </div>';
+                       watcheds+='  </div>';
+                     }
+                    }else{
+                      watcheds+='<p> Não tem Watchers </p>';
+                    }
+                    $("#Watcheds").html(watcheds);
+                  }
+                });
+
+                var myCookie = getCookie("id_chat");
+                   if (myCookie == null) {
+                     console.log("Não existe cookie");
+                   }
+                   else {
+                       var cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)id_chat\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+                       var cookieValue2 = document.cookie.replace(/(?:(?:^|.*;\s*)img_chat\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+                       actchat(cookieValue,cookieValue2);
+                   }
+       });
+    </script>
+
+    <!-- Header
+    ================================================= -->
+    <header id="header">
+      <nav class="navbar navbar-default navbar-fixed-top menu">
+        <div class="container">
+
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right main-menu">
+   
+              <li>
+               <a th:href="@{/chat?main=chat&personid=you}"> <span style="color:#000000; "> Chat</span></a>
+              </li>
+
+
+                  <li><a href="/feed?main=homepage&personid=you&frag=post">My stuff</a></li>
+                  <li><a href="/index">Logout</a></li>
+       
+                </div>
+              </li>
+            </ul>
+  
+          </div>
+        </div>
+      </nav>
+    </header>
+    <!--Header End-->
+
+    <div id="page-contents">
+
+
+
+
+
+
+
+    <!-- INICIO da pagina
+    ================================================= -->
+          <th:block  th:switch="${main}">
+            <div th:case="homepage"><span th:include="homepage::homepage"></span></div>
+            <div th:case="perfil"><span th:include="perfil::perfil"></span></div>
+            <div th:case="chat"><span th:include="fragchat::chat"></span></div>
+         </th:block>
+   </div>
+    <!-- FIM DA PGINA
+    ================================================= -->
+    <!-- Footer
+    ================================================= -->
+    <footer id="footer">
+
+    </footer>
+
+
+<script th:src="@{/js/jquery-3.1.1.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/jquery.sticky-kit.min.js}"></script>
+    <script th:src="@{/js/jquery.scrollbar.min.js}"></script>
+    <script th:src="@{/js/script.js}"></script>
+    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script> -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <script>
+      $(document).ready(function(){
+        var date_input=$('#datepicker'); //our date input has the name "date"
+        var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
+        var options={
+          format: 'mm/dd/yyyy',
+          container: container,
+          todayHighlight: true,
+          autoclose: true,
+        };
+        date_input.datepicker(options);
+      });
+  </script>
+  </body>
+</html>

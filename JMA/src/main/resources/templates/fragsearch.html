@@ -1,0 +1,80 @@
+<!-- INICIO FRAGMENTO -->
+<!-- PESQUISA CONTACTOS -->
+
+<div th:fragment="search" >
+
+<div class="create-post">
+  <div class="row">
+    <div class="col-md-9 col-sm-9">
+
+      <form th:action="@{/newsearch?main=homepage&frag=search}" method="POST">
+        <div class="form-group col-md-12 col-sm-12" style="margin-bottom:2%;">
+          <input class="form-control" type="text" name="keyword" value="" placeholder="Procurar"><input type="hidden" name="personid" value="you">
+        </div>
+        <br>
+        <div class="col-md-3 col-sm-3">
+          <div class="tools">
+            <button class="btn btn-primary pull-right btn-block">Pesquisar</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+
+  </div>
+</div><!-- Post Create Box End -->
+
+<!-- Nearby People List
+================================================= -->
+<div class="text-header">
+  Resultados de Pesquisa
+</div>
+
+<div class="people-nearby">
+  <!-- <div class="google-maps">
+    <div id="map" class="map"></div>
+  </div> -->
+
+
+ 
+  <th:block th:each="person : ${results}">
+
+  <!-- CONTACT MODEL -->
+  <div class="list-people">
+    <div class="row">
+
+
+      <div class="col-md-12 col-sm-12">
+        <!-- CONTACT MODEL -->
+        <div class="friend-card col-md-12 col-sm-12">
+          <div class="friend-info">
+          <div class="col-md-3 col-sm-3">
+            <img th:src="${person.pathimage}" alt="foto" class="profile-photo-lg" />
+          </div>
+          <div class="col-md-3 col-sm-3" style="margin-top:2px;">
+              <h5><a th:href="@{/profile?personid=} + ${person.id}" class="profile-link" ><span th:utext="${person.firstname}"> </span> <span th:utext="${person.lastname}"> </span></a></h5>
+              <p><span th:utext="${person.userwatched}"></p>
+          </div>
+          <div class="col-md-3 col-sm-3" style="margin-top:2px;">
+              <h5><a href="timeline.html" class="profile-link"><span th:utext="${person.category}"> </span></a></h5>
+              <p><span th:utext="${person.subcategory}"> </span></p>
+          </div>
+          <div class="col-md-3 col-sm-3" style="margin-top:20px;">
+            <a th:href="@{/profile?personid=} + ${person.id}"><button class="btn btn-primary" style="vertical-align:center" type="button" name="button" value="">Consultar</button></a>
+          </div>
+          </div>
+        </div>
+
+        <!-- END CONTACT MODEL -->
+      </div>
+
+
+    </div>
+  </div>
+  <!-- END CONTACT MODEL -->
+ 
+  </th:block >
+</div>
+</div>
+
+<!-- FIM FRAGMENTO -->

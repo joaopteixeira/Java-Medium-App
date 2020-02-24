@@ -1,0 +1,94 @@
+<div th:fragment="doevents">
+
+
+  <div class="create-post">
+              <div class="text-header">Fazer Evento</div>
+
+
+                  
+                  <form class="form-horizontal" th:action="@{/wevent/newevent}" method="POST">
+                    <div class="form-group thatwidth">
+                      <label for="input_email" class="col-sm-4 control-label" style="text-align: left;">Titulo</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control" id="input_email" name="title" placeholder="Titulo" required>
+                      </div>
+                    </div>
+                    <input type="hidden" name="iduser" th:value="${User.id}">
+                    <input type="hidden" name="personid" value="you">
+                   <input type="hidden" name="main" value="homepage">
+                   <input type="hidden" name="frag" value="doevent">
+                    <input type="hidden" name="pathimage" th:value="${User.pathimage}">
+                    <input type="hidden" name="username" th:value="${User.firstname + ' ' + User.lastname}">
+                    <br>
+                    <div class="form-group thatwidth">
+                      <label for="description" class="col-sm-4 control-label" style="text-align: left;">Descrição</label>
+                      <div class="col-sm-8">
+                        <textarea rows="3" style="resize: none; width: 100%;" class="form-control" id="description" name="description"></textarea>
+                      </div>
+                    </div>
+                    <div class="form-group thatwidth">
+                      <label for="desc_event" class="col-sm-4 control-label" style="text-align: left;">Morada</label>
+                      <div class="col-sm-8">
+                        <textarea rows="1" style="resize: none; width: 100%;" class="form-control" id="address" name="address" required></textarea>
+                      </div>
+                    </div>
+                    <div class="form-group thatwidth">
+                      <div class="col-md-6">
+                        <label for="desc_event" class="control-label">Distrito</label>
+                        <select class="form-control thatwidth" id="districtoptions"  name="district" required>
+                          
+                        </select>
+                      </div>
+                      <!--<div class="col-md-6" style="visibility: none;">
+                        <select class="form-control thatwidth">
+                          <option value="">1</option>
+                        </select>
+                      </div>-->                     
+                    </div>
+
+                    <div class="form-group thatwidth">
+                                            
+                          <div class="col-md-6"><label for="category" class="control-label">Categoria</label></div>
+                          <div class="col-md-6"><label for="select_cat" class="control-label">Sub-Categoria</label></div>
+                      
+                    </div>
+                    <div class="form-group thatwidth">
+                        
+                          <div class="col-md-6">
+                            <select class="form-control thatwidth" id="categoryevent" name="category" required>
+                              <div id="getcategories" th:each="Category: ${Category}">
+                              <option th:value="${Category.description}" th:text="${Category.description}" th:id="${Category.description}"></option>
+                            </div>
+                            </select>
+                          </div>
+                          <div class="col-md-6">
+                            <select class="form-control thatwidth" id="subcategoryevent" name="subcategory" required>
+                              <option value="">1</option>
+                            </select>
+                          </div>
+                                       
+                    </div>
+                    <div class="form-group thatwidth">
+                      
+                      <label for="desc_event" class="col-sm-4 control-label" style="text-align: left;">Data de Requisição</label>
+                      <div class="col-sm-8">
+                        <div class='input-group date' id='datepicker'>
+                          <input type='text' class="form-control" name="date" placeholder="MM/DD/YYYY" readonly="readonly" required/>
+                          <span class="input-group-addon">
+                              <span class="glyphicon glyphicon-calendar"></span>
+                          </span>
+                      </div>
+                      </div>
+                    </div>
+                    <br>
+                    <div class="form-group thatwidth">
+                        <button type="submit" class="btn btn-primary btn-block thatwidth">Submeter Evento</button>  
+                    </div>
+                  
+
+                  </form>
+                  
+
+              </div>
+
+</div>
